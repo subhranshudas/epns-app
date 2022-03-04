@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Box, Stack, Button, TextField,
 } from '@mui/material';
-import { EPNSTable } from './components/EPNSTable';
+import EPNSTable from './components/EPNSTable';
 import { getFakeData, columnsDef } from './utils';
 import './App.css';
 

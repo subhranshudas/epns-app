@@ -4,70 +4,69 @@ import { getFormattedDate } from '../../utils';
  */
 export const SORT_KEYS = {
   ASC: 'asc',
-  DESC: 'desc'
+  DESC: 'desc',
 };
 
 export const standardSort = (a, b) => {
-    if (a < b){
-      return -1;
-    }
-    if (a > b){
-      return 1;
-    }
-    return 0;
-  };
-  
-export const getSortedData = ({ tableData, columnKey, sortOrder, customSort }) => {
-    /** 
+  if (a < b) {
+    return -1;
+  }
+  if (a > b) {
+    return 1;
+  }
+  return 0;
+};
+
+export const getSortedData = ({
+  tableData, columnKey, sortOrder, customSort,
+}) => {
+  /**
      * SPECIAL TYPES
      */
-    if (typeof customSort === 'function') {
-      return tableData.sort((a, b) => {
-        const [first, second] = sortOrder === SORT_KEYS.ASC ?
-          [a, b] : [b, a];
-        return customSort(first, second);
-      });
-    }
-  
+  if (typeof customSort === 'function') {
     return tableData.sort((a, b) => {
-      const [first, second] = sortOrder === SORT_KEYS.ASC ?
-        [a[columnKey], b[columnKey]] :
-        [b[columnKey], a[columnKey]];
-      return standardSort(first, second);
+      const [first, second] = sortOrder === SORT_KEYS.ASC
+        ? [a, b] : [b, a];
+      return customSort(first, second);
     });
-  };
+  }
 
-  export const getFilteredData = ({ tableData, filters }) => {
-    return Object.keys(filters).reduce((filteredData, columnKey) => {
-        const filterValue = filters[columnKey];
+  return tableData.sort((a, b) => {
+    const [first, second] = sortOrder === SORT_KEYS.ASC
+      ? [a[columnKey], b[columnKey]]
+      : [b[columnKey], a[columnKey]];
+    return standardSort(first, second);
+  });
+};
 
-        return filteredData.filter((rowData) => {
-           const rowValue = rowData[columnKey];
+export const getFilteredData = ({ tableData, filters }) => Object.keys(filters)
+  .reduce((filteredData, columnKey) => {
+    const filterValue = filters[columnKey];
 
-           if (typeof rowValue === 'number') {
-              return parseFloat(rowValue) === parseInt(filterValue);
-           } else if (rowValue instanceof Date) {
-              return getFormattedDate(rowValue).includes(filterValue);
-           } // add other cases if needed
+    return filteredData.filter((rowData) => {
+      const rowValue = rowData[columnKey];
 
-          return rowValue.toUpperCase().includes(filterValue.toUpperCase());
-        });
+      if (typeof rowValue === 'number') {
+        return parseFloat(rowValue) === parseFloat(filterValue);
+      } if (rowValue instanceof Date) {
+        return getFormattedDate(rowValue).includes(filterValue);
+      } // add other cases if needed
 
-    }, tableData);
-  };
-  
-  export const getColumnSchema = (columnConfig) => {
-    const schema = {};
-  
-    for (let i = 0; i < columnConfig.length; i++) {
-      const config = columnConfig[i];
-  
-      schema[config.field] = {};
-  
-      if (typeof config?.customSort === 'function') {
-        schema[config.field].customSort = config.customSort;
-      }
+      return rowValue.toUpperCase().includes(filterValue.toUpperCase());
+    });
+  }, tableData);
+
+export const getColumnSchema = (columnConfig) => {
+  const schema = {};
+
+  for (let i = 0; i < columnConfig.length; i += 1) {
+    const config = columnConfig[i];
+
+    schema[config.field] = {};
+
+    if (typeof config?.customSort === 'function') {
+      schema[config.field].customSort = config.customSort;
     }
-    return schema;
-  };
-
+  }
+  return schema;
+};
