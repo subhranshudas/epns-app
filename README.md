@@ -15,7 +15,8 @@ Design a basic web app or react native app, In which you have to implement sorti
 1. The table is designed as a component.
 2. User can pass props to customise the table.
 3. Table uses a column configuration as defined in `columnsDef`
-4. Currently supporting -
+4. Date is in `MM/DD/YYYY` format
+5. Currently supporting -
    * Single Column sort
    * Single/Multi Column Filter
    * Sort & Filter
