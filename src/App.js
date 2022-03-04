@@ -1,34 +1,14 @@
-import { useState } from 'react';
-import { Box, Stack, Button, TextField } from '@mui/material';
-import './App.css';
+import React, { useState } from 'react';
+import {
+  Box, Stack, Button, TextField,
+} from '@mui/material';
 import { EPNSTable } from './components/EPNSTable';
-import { getFakeData } from './utils';
-
-
-const columns = [
-  { title: 'Name', field: 'firstName' },
-  { title: 'Surname', field: 'lastName' },
-  {
-    title: 'Birth Year',
-    field: 'birthYear',
-    type: 'date',
-    customSort: (a, b) => {
-      if ((a.birthYear).getTime() < (b.birthYear).getTime()){
-        return 1;
-      }
-      if ((a.birthYear).getTime() > (b.birthYear).getTime()){
-        return -1;
-      }
-      return 0;
-    }
-  },
-  { title: 'Birth Place', field: 'birthCity'},
-  { title: 'Salary', field: 'salary'}
-];
+import { getFakeData, columnsDef } from './utils';
+import './App.css';
 
 function App() {
   const [tableData, setTableData] = useState([]);
-  const [numOfItems, setNumOfItems] = useState(0); 
+  const [numOfItems, setNumOfItems] = useState(0);
 
   const onChangeHandler = (e) => {
     setNumOfItems(e.target.value);
@@ -51,6 +31,7 @@ function App() {
           label="Num of Items"
           variant="outlined"
           type="number"
+          InputProps={{ inputProps: { min: 0 } }}
           value={numOfItems}
           onChange={onChangeHandler}
         />
@@ -61,7 +42,7 @@ function App() {
       <Box padding={3}>
         <EPNSTable
           data={tableData}
-          columns={columns}
+          columns={columnsDef}
         />
       </Box>
     </Box>
